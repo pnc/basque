@@ -1,0 +1,13 @@
+[package]
+name = "basque"
+version = "0.1.0"
+authors = ["Phil Calvin <phil@philcalvin.com>"]
+edition = "2018"
+
+[dependencies]
+libc = "0.2.50"
+
+[lib]
+crate-type = ["cdylib"]
+name = "basque"
+path = "basque.rs"

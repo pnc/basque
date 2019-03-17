@@ -5,5 +5,6 @@ jobs:
       - image: circleci/rust
     steps:
       - checkout # check out the code in the project directory
-      - run: ./build.sh
+      - run: sudo apt install sqlite
+      - run: cargo build
       - run: ./test.sh

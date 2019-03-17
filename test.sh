@@ -2,4 +2,4 @@
 
 set -ex
 
-echo '.load ./libbasque' | sqlite3
+echo '.load ./target/debug/libbasque' | sqlite3

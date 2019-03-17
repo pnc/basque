@@ -6,9 +6,11 @@
 
 - [x] Prototype to confirm `no_mangle` will work and SQLite can load the Rust-built module
 - [ ] Generate `sqlite3ext.h` API struct with rust-bindgen
-- [ ] Switch to Cargo for building
+- [x] Switch to Cargo for building
 - [ ] Fix all the places I'm cheating and using `u64` instead of pointer types
 - [ ] Actually learn Rust
+
+[![CircleCI](https://circleci.com/gh/pnc/basque.svg?style=svg)](https://circleci.com/gh/pnc/basque)
 
 ## Theoretical example usage
 
