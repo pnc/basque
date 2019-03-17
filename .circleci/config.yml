@@ -1,0 +1,9 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/rust
+    steps:
+      - checkout # check out the code in the project directory
+      - run: ./build.sh
+      - run: ./test.sh
