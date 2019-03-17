@@ -10,20 +10,21 @@ extern crate libc;
 use libc::{c_void, c_char};
 
 #[no_mangle]
-unsafe extern fn basque_cmd(ctx: *mut sqlite3_context,
+extern fn basque_cmd(ctx: *mut sqlite3_context,
                      argc: ::std::os::raw::c_int,
                      argv: *mut *mut sqlite3_value) {
-    let state_ptr = ((*global_routines).user_data.unwrap())(ctx);
+    let routines = unsafe { (*GLOBAL_ROUTINES) };
+    let state_ptr = unsafe { (routines.user_data.unwrap())(ctx) };
     println!("basque_cmd called with {} args and context: {:p}", argc, state_ptr);
     let internal_state: Box<Box<InternalState>> = unsafe { Box::from_raw(state_ptr as *mut Box<InternalState>) };
     // Was hoping for 69. Get "1" or other random numbers,
     // so I'm grabbing the wrong memory somehow.
     println!("magic value from context is: {}", internal_state.magic);
+    unsafe { (routines.result_int64.unwrap())(ctx, internal_state.magic) };
 }
 
 struct InternalState {
-    api: *const sqlite3_api_routines,
-    magic: u32
+    magic: i64
 }
 
 // https://www.sqlite.org/loadext.html
@@ -46,7 +47,7 @@ struct InternalState {
 
 // rot13 example extension: https://www.sqlite.org/src/file/ext/misc/rot13.c
 
-static mut global_routines: *const sqlite3_api_routines = 0 as *const sqlite3_api_routines;
+static mut GLOBAL_ROUTINES: *const sqlite3_api_routines = 0 as *const sqlite3_api_routines;
 
 #[no_mangle]
 pub unsafe extern fn sqlite3_basque_init(db: *mut sqlite3, err: *mut *const c_char, routines: *const sqlite3_api_routines) -> u32 {
@@ -55,13 +56,13 @@ pub unsafe extern fn sqlite3_basque_init(db: *mut sqlite3, err: *mut *const c_ch
     std::mem::forget(msg);
     *err = msg_ptr;
 
-    global_routines = routines;
+    GLOBAL_ROUTINES = routines;
     // We need to keep a reference to `routines` to call sqlite's API later (we're not
     // allowed to link to it, since we need the version that loaded us as a library.)
     // SQLite recommends you do this using a macro called SQLITE_EXTENSION_INIT2,
     // which stuffs the pointer into a static. I'd rather keep it inside our
     // callback context so we can avoid a global.
-    let internal_state = Box::new(Box::new(InternalState { api: routines, magic: 69 }));
+    let internal_state = Box::new(Box::new(InternalState { magic: 69 }));
     let internal_state_ptr = Box::into_raw(internal_state);
     println!("raw context pointer: {:p}", internal_state_ptr);
 
