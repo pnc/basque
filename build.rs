@@ -13,6 +13,8 @@ fn main() {
     // the resulting bindings.
     let bindings = bindgen::Builder::default()
         .whitelist_type("sqlite3_api_routines")
+        .whitelist_var("SQLITE_UTF8")
+        .whitelist_var("SQLITE_OK")
         .rustfmt_bindings(true)
         .with_rustfmt(PathBuf::from("/Users/phil/.cargo/bin/rustfmt"))
         // The input header we would like to generate
