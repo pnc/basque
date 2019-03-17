@@ -7,7 +7,23 @@ use std::ffi::CString;
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
 extern crate libc;
-use libc::{c_int, c_void, c_char};
+use libc::{c_void, c_char};
+
+#[no_mangle]
+extern fn basque_cmd(ctx: *mut sqlite3_context,
+                     argc: ::std::os::raw::c_int,
+                     argv: *mut *mut sqlite3_value) {
+    println!("basque_cmd called with {} args", argc);
+    let internal_state: Box<Box<InternalState>> = unsafe { Box::from_raw(ctx as *mut Box<InternalState>) };
+    // Was hoping for 69. Get "1" or other random numbers,
+    // so I'm grabbing the wrong memory somehow.
+    println!("magic value from context is: {}", internal_state.magic);
+}
+
+struct InternalState {
+    api: *const sqlite3_api_routines,
+    magic: u32
+}
 
 // https://www.sqlite.org/loadext.html
 // int sqlite3_extension_init(
@@ -28,13 +44,24 @@ use libc::{c_int, c_void, c_char};
 // }
 
 #[no_mangle]
-pub unsafe extern fn sqlite3_basque_init(db: *const c_void, err: *mut *const c_char, routines: *const sqlite3_api_routines) -> c_int {
+pub unsafe extern fn sqlite3_basque_init(db: *mut sqlite3, err: *mut *const c_char, routines: *const sqlite3_api_routines) -> u32 {
     let msg = CString::new("Not yet implemented!").expect("Failed to allocate error");
-    //let msg_ptr = msg.as_ptr();
-    println!("String is in {:p}", (*routines).mprintf.unwrap());
     let msg_ptr: *const c_char = ((*routines).mprintf.unwrap())(msg.as_ptr());
-    println!("sqlite fmt is at {:p}", msg_ptr);
     std::mem::forget(msg);
     *err = msg_ptr;
-    return 1;
+
+    // We need to keep a reference to `routines` to call sqlite's API later (we're not
+    // allowed to link to it, since we need the version that loaded us as a library.)
+    // SQLite recommends you do this using a macro called SQLITE_EXTENSION_INIT2,
+    // which stuffs the pointer into a static. I'd rather keep it inside our
+    // callback context so we can avoid a global.
+    let internal_state = Box::new(Box::new(InternalState { api: routines, magic: 69 }));
+
+    let fn_name = CString::new("basque_cmd").expect("Failed to allocate name");
+
+    ((*routines).create_function.unwrap())(db, fn_name.as_ptr(), 1, SQLITE_UTF8 as i32,
+                                           Box::into_raw(internal_state) as *mut c_void,
+                                           Some(basque_cmd), None, None);
+
+    return SQLITE_OK;
 }
