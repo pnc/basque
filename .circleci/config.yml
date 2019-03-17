@@ -5,6 +5,13 @@ jobs:
       - image: circleci/rust
     steps:
       - checkout # check out the code in the project directory
+      - restore_cache:
+          key: project-cache
       - run: sudo apt install sqlite clang
       - run: cargo build
       - run: ./test.sh
+      - save_cache:
+          key: project-cache
+          paths:
+            - "~/.cargo"
+            - "./target"
