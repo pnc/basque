@@ -2,10 +2,18 @@
 
 **This is a work in progress and doesn't work yet!**
 
+## Pitch
+
+`xargs`/`parallel` are all fun and games until you need to include or escape quotes. What if you could use the full power of SQLite to generate, query, and store the results of shell commands?
+
+## Anti-pitch
+
+Anything you could do by running shell commands from SQLite, you could do by piping the output of those commands to SQLite using the incredibly [q](http://harelba.github.io/q/) library. You probably want that instead.
+
 ## Remaining work
 
 - [x] Prototype to confirm `no_mangle` will work and SQLite can load the Rust-built module
-- [ ] Generate `sqlite3ext.h` API struct with rust-bindgen
+- [x] Generate `sqlite3ext.h` API struct with rust-bindgen
 - [x] Switch to Cargo for building
 - [ ] Fix all the places I'm cheating and using `u64` instead of pointer types
 - [ ] Actually learn Rust

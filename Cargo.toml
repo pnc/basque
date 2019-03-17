@@ -7,6 +7,9 @@ edition = "2018"
 [dependencies]
 libc = "0.2.50"
 
+[build-dependencies]
+bindgen = "0.48.1"
+
 [lib]
 crate-type = ["cdylib"]
 name = "basque"
