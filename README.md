@@ -40,3 +40,13 @@ If module loading is disabled, you'll get this error when you try to run `.load 
 ```
 Error: unknown command or invalid arguments:  "load". Enter ".help" for help
 ```
+
+### Useful references
+
+* <https://www.sqlite.org/src/file/ext/misc/series.c>
+* <https://www.sqlite.org/capi3ref.html#sqlite3_auto_extension>
+* <https://doc.rust-lang.org/nomicon/ffi.html>
+* <https://rust-lang.github.io/rust-bindgen/print.html>
+* <https://doc.rust-lang.org/1.30.0/book/second-edition/ch19-01-unsafe-rust.html>
+* <https://github.com/rust-lang/rust-bindgen/blob/master/book/src/whitelisting.md>
+* <https://github.com/cloudmeter/sqlite/blob/master/sqlite3ext.h>
