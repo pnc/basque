@@ -8,7 +8,7 @@
 
 ## Anti-pitch
 
-Anything you could do by running shell commands from SQLite, you could do by piping the output of those commands to SQLite using the incredibly [q](http://harelba.github.io/q/) library. You probably want that instead.
+Anything you could do by running shell commands from SQLite, you could do by piping the output of those commands to SQLite using the incredible [q](http://harelba.github.io/q/) tool. You probably want that instead.
 
 ## Remaining work
 
