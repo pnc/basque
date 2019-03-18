@@ -15,7 +15,14 @@ Anything you could do by running shell commands from SQLite, you could do by pip
 - [x] Prototype to confirm `no_mangle` will work and SQLite can load the Rust-built module
 - [x] Generate `sqlite3ext.h` API struct with rust-bindgen
 - [x] Switch to Cargo for building
-- [ ] Fix all the places I'm cheating and using `u64` instead of pointer types
+- [x] Fix all the places I'm cheating and using `u64` instead of pointer types
+- [ ] Make the `GLOBAL_ROUTINES` struct threadsafe (Mutex? Container crate?)
+- [ ] Handle `SQLITE_*` error results
+- [ ] Actually honor `basque_cmd` function parameters
+- [ ] Handle all the panicky `unwrap()`s
+- [ ] Free Command result allocations properly
+- [ ] Return `stderr` too, probably? Or log it somehow
+- [ ] Implement a virtual table instead, so each line result is a row
 - [ ] Actually learn Rust
 
 [![CircleCI](https://circleci.com/gh/pnc/basque.svg?style=svg)](https://circleci.com/gh/pnc/basque)
