@@ -18,7 +18,7 @@ Anything you could do by running shell commands from SQLite, you could do by pip
 - [x] Fix all the places I'm cheating and using `u64` instead of pointer types
 - [ ] Make the `GLOBAL_ROUTINES` struct threadsafe (Mutex? Container crate?)
 - [ ] Handle `SQLITE_*` error results
-- [ ] Actually honor `basque_cmd` function parameters
+- [x] Actually honor `basque_cmd` function parameters
 - [ ] Handle all the panicky `unwrap()`s
 - [ ] Free Command result allocations properly
 - [ ] Return `stderr` too, probably? Or log it somehow
@@ -27,11 +27,25 @@ Anything you could do by running shell commands from SQLite, you could do by pip
 
 [![CircleCI](https://circleci.com/gh/pnc/basque.svg?style=svg)](https://circleci.com/gh/pnc/basque)
 
-## Theoretical example usage
+## Example usage
+
+```bash
+$ cargo build
+$ sqlite3
+```
 
 ```sql
-sqlite> select count(*) - 1 from (select basque_cmd("ps -o command"));
-14
+Connected to a transient in-memory database.
+Use ".open FILENAME" to reopen on a persistent database.
+sqlite> .load ./target/debug/libbasque
+sqlite> create table websites(url text, body text);
+sqlite> insert into websites(url) values('https://www.sqlite.org/');
+sqlite> insert into websites(url) values('https://www.rust-lang.org/');
+sqlite> update websites set body = basque_cmd("curl", "-L", url);
+sqlite> select url, substr(body, 1, 20) from websites;
+https://www.sqlite.org/|<!DOCTYPE HTML PUBLI
+https://www.rust-lang.org/|<!doctype html>
+<htm
 ```
 
 ## Development
