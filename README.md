@@ -8,23 +8,6 @@
 
 Anything you could do by running shell commands from SQLite, you could do by piping the output of those commands to SQLite using the incredible [q](http://harelba.github.io/q/) tool. You probably want that instead.
 
-## Remaining work
-
-- [x] Prototype to confirm `no_mangle` will work and SQLite can load the Rust-built module
-- [x] Generate `sqlite3ext.h` API struct with rust-bindgen
-- [x] Switch to Cargo for building
-- [x] Fix all the places I'm cheating and using `u64` instead of pointer types
-- [ ] Make the `GLOBAL_ROUTINES` struct threadsafe (Mutex? Container crate?)
-- [ ] Handle `SQLITE_*` error results
-- [x] Actually honor `basque_cmd` function parameters
-- [ ] Handle all the panicky `unwrap()`s
-- [x] Free Command result allocations properly
-- [ ] Return `stderr` too, probably? Or log it somehow
-- [ ] Implement a virtual table instead, so each line result is a row
-- [ ] Actually learn Rust
-
-[![CircleCI](https://circleci.com/gh/pnc/basque.svg?style=svg)](https://circleci.com/gh/pnc/basque)
-
 ## Example usage
 
 ```bash
@@ -45,6 +28,23 @@ https://www.sqlite.org/|<!DOCTYPE HTML PUBLI
 https://www.rust-lang.org/|<!doctype html>
 <htm
 ```
+
+## Remaining work
+
+- [x] Prototype to confirm `no_mangle` will work and SQLite can load the Rust-built module
+- [x] Generate `sqlite3ext.h` API struct with rust-bindgen
+- [x] Switch to Cargo for building
+- [x] Fix all the places I'm cheating and using `u64` instead of pointer types
+- [ ] Make the `GLOBAL_ROUTINES` struct threadsafe (Mutex? Container crate?)
+- [ ] Handle `SQLITE_*` error results
+- [x] Actually honor `basque_cmd` function parameters
+- [ ] Handle all the panicky `unwrap()`s
+- [x] Free Command result allocations properly
+- [ ] Return `stderr` too, probably? Or log it somehow
+- [ ] Implement a virtual table instead, so each line result is a row
+- [ ] Actually learn Rust
+
+[![CircleCI](https://circleci.com/gh/pnc/basque.svg?style=svg)](https://circleci.com/gh/pnc/basque)
 
 ## Development
 
