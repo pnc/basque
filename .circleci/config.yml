@@ -8,16 +8,16 @@ workflows:
 jobs:
   valgrind:
     docker:
-      - image: circleci/rust
+      - image: debian:unstable-slim
     steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
       - checkout
+      - run: ./prepare-valgrind.sh
+      - restore_cache:
+          key: project-cache
+      - run: cargo build
       - run:
           name: "Run Valgrind"
-          command: |
-            docker build -t valgrind .
-            docker run valgrind /app/leaks.sh
+          command: ./leaks.sh
   build:
     docker:
       - image: circleci/rust
