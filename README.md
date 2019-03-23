@@ -20,7 +20,7 @@ Anything you could do by running shell commands from SQLite, you could do by pip
 - [ ] Handle `SQLITE_*` error results
 - [x] Actually honor `basque_cmd` function parameters
 - [ ] Handle all the panicky `unwrap()`s
-- [ ] Free Command result allocations properly
+- [x] Free Command result allocations properly
 - [ ] Return `stderr` too, probably? Or log it somehow
 - [ ] Implement a virtual table instead, so each line result is a row
 - [ ] Actually learn Rust
