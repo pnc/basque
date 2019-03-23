@@ -1,6 +1,8 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
+#[global_allocator] static A: std::alloc::System = std::alloc::System;
+
 use std::str;
 use std::slice;
 use std::ffi::CString;
