@@ -1,6 +1,8 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
+#[global_allocator] static A: std::alloc::System = std::alloc::System;
+
 use std::str;
 use std::slice;
 use std::ffi::CString;
@@ -57,11 +59,11 @@ extern fn basque_cmd(ctx: *mut sqlite3_context,
             .args(args)
             .output()
             .expect("failed to execute process").stdout;
+        let length = result.len();
 
-        let result_str = String::from_utf8(result).unwrap();
-        // TODO: set destructor context and free result properly
-        routines.result_text(ctx, result_str.as_ptr() as *const i8, result_str.len() as i32, None);
-        std::mem::forget(result_str);
+        let result_str = CString::new(result).expect("result string");
+        routines.result_text(ctx, result_str.into_raw() as *const i8, length as i32,
+                             Some(basque_destroy_str));
     } else {
         // TODO: Call sqlite3_result_error_code, probably
     }
@@ -71,6 +73,12 @@ extern fn basque_cmd(ctx: *mut sqlite3_context,
 extern fn basque_destroy(state_ptr: *mut c_void) {
     // from_raw takes ownership back and drops the memory
     unsafe { Box::from_raw(state_ptr as *mut Box<InternalState>) };
+}
+
+#[no_mangle]
+extern fn basque_destroy_str(ptr: *mut c_void) {
+    // from_raw takes ownership back and drops the memory
+    unsafe { CString::from_raw(ptr as *mut i8) };
 }
 
 struct InternalState {
@@ -101,10 +109,10 @@ static mut GLOBAL_ROUTINES: Option<SqliteRoutines> = None;
 
 #[no_mangle]
 pub unsafe extern fn sqlite3_basque_init(db: *mut sqlite3, err: *mut *const c_char, routines: *const sqlite3_api_routines) -> u32 {
-    let msg = CString::new("Not yet implemented!").expect("Failed to allocate error");
-    let msg_ptr: *const c_char = ((*routines).mprintf.unwrap())(msg.as_ptr());
-    std::mem::forget(msg);
-    *err = msg_ptr;
+    // let msg = CString::new("Not yet implemented!").expect("Failed to allocate error");
+    // let msg_ptr: *const c_char = ((*routines).mprintf.unwrap())(msg.as_ptr());
+    // std::mem::forget(msg);
+    // *err = msg_ptr;
 
     // We need to keep a reference to `routines` to call sqlite's API later (we're not
     // allowed to link to it, since we need the version that loaded us as a library.)

@@ -1,17 +1,35 @@
 version: 2
+workflows:
+  version: 2
+  all:
+    jobs:
+      - build
+      - valgrind
 jobs:
+  valgrind:
+    docker:
+      - image: debian:unstable-slim
+    steps:
+      - checkout
+      - run: ./prepare-valgrind.sh
+      - restore_cache:
+          key: project-cache
+      - run: ~/.cargo/bin/cargo build
+      - run:
+          name: "Run Valgrind"
+          command: ./leaks.sh
   build:
     docker:
       - image: circleci/rust
     steps:
-      - checkout # check out the code in the project directory
+      - checkout
       - restore_cache:
           key: project-cache
       - run: sudo apt install sqlite clang
       - run: cargo build
-      - run: ./test.sh
       - save_cache:
           key: project-cache
           paths:
             - "~/.cargo"
             - "./target"
+      - run: ./test.sh
