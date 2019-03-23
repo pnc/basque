@@ -1,17 +1,35 @@
 version: 2
+workflows:
+  version: 2
+  all:
+    jobs:
+      - build
+      - valgrind
 jobs:
+  valgrind:
+    docker:
+      - image: circleci/rust
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - checkout
+      - run:
+          name: "Run Valgrind"
+          command: |
+            docker build -t valgrind .
+            docker run valgrind /app/leaks.sh
   build:
     docker:
       - image: circleci/rust
     steps:
-      - checkout # check out the code in the project directory
+      - checkout
       - restore_cache:
           key: project-cache
       - run: sudo apt install sqlite clang
       - run: cargo build
-      - run: ./test.sh
       - save_cache:
           key: project-cache
           paths:
             - "~/.cargo"
             - "./target"
+      - run: ./test.sh
