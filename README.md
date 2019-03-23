@@ -1,7 +1,5 @@
 # Basque - execute shell commands from SQLite
 
-**This is a work in progress and doesn't work yet!**
-
 ## Pitch
 
 `xargs`/`parallel` are all fun and games until you need to include or escape quotes. What if you could use the full power of SQLite to generate, query, and store the results of shell commands?
